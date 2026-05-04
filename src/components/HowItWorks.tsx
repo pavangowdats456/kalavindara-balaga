@@ -10,12 +10,12 @@ const steps = [
 export const HowItWorks = () => {
   return (
     <section id="how" className="bg-muted/40 border-y border-border/60">
-      <div className="container py-20 md:py-28">
-        <div className="text-center max-w-2xl mx-auto mb-14">
+      <div className="container py-12 md:py-28">
+        <div className="text-center max-w-2xl mx-auto mb-8 md:mb-14">
           <div className="text-xs uppercase tracking-[0.25em] text-secondary font-semibold">How it works</div>
-          <h2 className="font-display text-4xl md:text-5xl font-bold mt-2">From village stage to your celebration</h2>
+          <h2 className="font-display text-3xl md:text-5xl font-bold mt-2">From village stage to your celebration</h2>
         </div>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
           {steps.map((s, i) => (
             <div
               key={s.title}
