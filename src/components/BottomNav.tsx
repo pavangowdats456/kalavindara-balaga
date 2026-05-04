@@ -1,10 +1,11 @@
-import { Home, Search, Calendar, User } from "lucide-react";
+import { Home, Compass, Sparkles, Info } from "lucide-react";
+import { NavLink } from "react-router-dom";
 
 const items = [
-  { icon: Home, label: "Home", href: "#top" },
-  { icon: Search, label: "Explore", href: "#explore" },
-  { icon: Calendar, label: "How", href: "#how" },
-  { icon: User, label: "Impact", href: "#impact" },
+  { icon: Home, label: "Home", to: "/" },
+  { icon: Compass, label: "Explore", to: "/explore" },
+  { icon: Sparkles, label: "How", to: "/how" },
+  { icon: Info, label: "About", to: "/about" },
 ];
 
 export const BottomNav = () => {
@@ -13,13 +14,24 @@ export const BottomNav = () => {
       <ul className="grid grid-cols-4">
         {items.map((it) => (
           <li key={it.label}>
-            <a
-              href={it.href}
-              className="flex flex-col items-center justify-center gap-0.5 py-2.5 text-muted-foreground active:text-primary active:scale-95 transition"
+            <NavLink
+              to={it.to}
+              end={it.to === "/"}
+              className={({ isActive }) =>
+                `flex flex-col items-center justify-center gap-0.5 py-2.5 transition active:scale-95 ${
+                  isActive ? "text-primary" : "text-muted-foreground"
+                }`
+              }
             >
-              <it.icon className="w-5 h-5" />
-              <span className="text-[10px] font-medium">{it.label}</span>
-            </a>
+              {({ isActive }) => (
+                <>
+                  <div className={`relative ${isActive ? "drop-shadow-[0_0_8px_hsl(var(--primary)/0.4)]" : ""}`}>
+                    <it.icon className="w-5 h-5" strokeWidth={isActive ? 2.6 : 2} />
+                  </div>
+                  <span className={`text-[10px] ${isActive ? "font-bold" : "font-medium"}`}>{it.label}</span>
+                </>
+              )}
+            </NavLink>
           </li>
         ))}
       </ul>

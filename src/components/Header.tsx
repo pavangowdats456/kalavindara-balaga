@@ -1,10 +1,19 @@
 import { Drum, Search } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
+
+const links = [
+  { label: "Home", to: "/" },
+  { label: "Explore", to: "/explore" },
+  { label: "How it works", to: "/how" },
+  { label: "About", to: "/about" },
+];
 
 export const Header = () => {
+  const { pathname } = useLocation();
   return (
     <header className="sticky top-0 z-50 backdrop-blur-md bg-background/85 border-b border-border/60 pt-[env(safe-area-inset-top)]">
       <div className="container flex items-center justify-between h-14">
-        <a href="#top" className="flex items-center gap-2 group">
+        <Link to="/" className="flex items-center gap-2 group">
           <div className="w-9 h-9 rounded-full bg-gradient-festival grid place-items-center shadow-warm">
             <Drum className="w-4 h-4 text-primary-foreground" strokeWidth={2.4} />
           </div>
@@ -12,14 +21,27 @@ export const Header = () => {
             <div className="font-display text-base font-bold text-primary">Kalavidara</div>
             <div className="font-script text-[10px] text-secondary -mt-1">ಬಳಗ · Balaga</div>
           </div>
-        </a>
-        <a
-          href="#explore"
+        </Link>
+
+        <nav className="hidden md:flex items-center gap-7 text-sm font-medium">
+          {links.map((l) => (
+            <Link
+              key={l.to}
+              to={l.to}
+              className={`transition-colors hover:text-primary ${pathname === l.to ? "text-primary" : "text-foreground/80"}`}
+            >
+              {l.label}
+            </Link>
+          ))}
+        </nav>
+
+        <Link
+          to="/explore"
           aria-label="Search artists"
-          className="w-10 h-10 grid place-items-center rounded-full bg-muted/70 text-foreground/80 active:scale-95 transition-transform"
+          className="md:hidden w-10 h-10 grid place-items-center rounded-full bg-muted/70 text-foreground/80 active:scale-95 transition-transform"
         >
           <Search className="w-4 h-4" />
-        </a>
+        </Link>
       </div>
     </header>
   );
