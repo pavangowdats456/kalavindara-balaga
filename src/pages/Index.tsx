@@ -8,6 +8,7 @@ import { ArtFormsStrip } from "@/components/ArtFormsStrip";
 import { HowItWorks } from "@/components/HowItWorks";
 import { Impact } from "@/components/Impact";
 import { Footer } from "@/components/Footer";
+import { BottomNav } from "@/components/BottomNav";
 import { ARTISTS, type Artist } from "@/data/artists";
 
 const Index = () => {
@@ -35,7 +36,7 @@ const Index = () => {
       />
       <link rel="canonical" href="/" />
 
-      <div className="min-h-screen flex flex-col">
+      <div className="min-h-screen flex flex-col pb-16 md:pb-0">
         <Header />
         <main className="flex-1">
           <Hero />
@@ -50,10 +51,10 @@ const Index = () => {
               setDistrict={setDistrict}
             />
 
-            <div className="flex items-end justify-between flex-wrap gap-4 mt-14 mb-8">
+            <div className="flex items-end justify-between flex-wrap gap-4 mt-8 md:mt-14 mb-5 md:mb-8">
               <div>
-                <div className="text-xs uppercase tracking-[0.25em] text-secondary font-semibold">Featured troupes</div>
-                <h2 className="font-display text-4xl md:text-5xl font-bold mt-2">
+                <div className="text-[10px] uppercase tracking-[0.25em] text-secondary font-semibold">Featured</div>
+                <h2 className="font-display text-2xl md:text-5xl font-bold mt-1.5">
                   {filtered.length} {filtered.length === 1 ? "troupe" : "troupes"} ready to perform
                 </h2>
               </div>
@@ -64,7 +65,7 @@ const Index = () => {
                 No troupes match your filters yet. Try a different district or art form.
               </div>
             ) : (
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 pb-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 pb-8">
                 {filtered.map((a, i) => (
                   <ArtistCard key={a.id} artist={a} onView={setSelected} index={i} />
                 ))}
@@ -82,6 +83,7 @@ const Index = () => {
           <Impact />
         </main>
         <Footer />
+        <BottomNav />
       </div>
 
       <ArtistDetailDialog artist={selected} onClose={() => setSelected(null)} />
