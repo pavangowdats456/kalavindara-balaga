@@ -9,6 +9,8 @@ import Explore from "./pages/Explore";
 import ArtistDetail from "./pages/ArtistDetail";
 import HowPage from "./pages/HowPage";
 import About from "./pages/About";
+import Splash from "./pages/Splash";
+import Login from "./pages/Login";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -20,6 +22,8 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
+          <Route path="/splash" element={<Splash />} />
+          <Route path="/login" element={<Login />} />
           <Route element={<AppLayout />}>
             <Route path="/" element={<Home />} />
             <Route path="/explore" element={<Explore />} />
