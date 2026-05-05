@@ -38,7 +38,7 @@ const Login = () => {
     localStorage.setItem("kb_role", role ?? "client");
     localStorage.setItem("kb_phone", phone);
     toast({ title: "Welcome to Kalavidara-Balaga!" });
-    navigate("/", { replace: true });
+    navigate(role === "artist" ? "/artist-app" : "/", { replace: true });
   };
 
   return (
