@@ -231,6 +231,15 @@ const ArtistApp = () => {
               />
             </Field>
 
+            <Field icon={<User className="w-4 h-4" />} label="Led by (person's name)">
+              <Input
+                value={form.ledBy}
+                onChange={(e) => update("ledBy", e.target.value)}
+                placeholder="e.g. Shri Ravi Kumar"
+                maxLength={80}
+              />
+            </Field>
+
             <Field icon={<Tag className="w-4 h-4" />} label="Category">
               <Select value={form.category} onValueChange={(v) => update("category", v)}>
                 <SelectTrigger>
