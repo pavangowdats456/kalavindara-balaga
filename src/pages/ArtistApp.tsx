@@ -49,6 +49,7 @@ type Step = 1 | 2 | 3;
 interface FormState {
   photo: string | null;
   name: string;
+  ledBy: string;
   category: string;
   city: string;
   state: string;
@@ -66,6 +67,7 @@ interface FormState {
 const initial: FormState = {
   photo: null,
   name: "",
+  ledBy: "",
   category: "",
   city: "",
   state: "",
@@ -118,6 +120,7 @@ const ArtistApp = () => {
 
   const validateStep1 = () => {
     if (!form.name.trim()) return "Please enter your artist / troupe name";
+    if (!form.ledBy.trim()) return "Please enter the name of the person leading the troupe";
     if (!form.category) return "Select a category";
     if (!form.city.trim() || !form.state.trim()) return "Enter city and state";
     if (!/^\d{10}$/.test(form.phone)) return "Enter a valid 10-digit phone";
@@ -224,6 +227,15 @@ const ArtistApp = () => {
                 value={form.name}
                 onChange={(e) => update("name", e.target.value)}
                 placeholder="e.g. Karnataka Janapada Troupe"
+                maxLength={80}
+              />
+            </Field>
+
+            <Field icon={<User className="w-4 h-4" />} label="Led by (person's name)">
+              <Input
+                value={form.ledBy}
+                onChange={(e) => update("ledBy", e.target.value)}
+                placeholder="e.g. Shri Ravi Kumar"
                 maxLength={80}
               />
             </Field>
