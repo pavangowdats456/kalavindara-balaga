@@ -49,6 +49,7 @@ type Step = 1 | 2 | 3;
 interface FormState {
   photo: string | null;
   name: string;
+  ledBy: string;
   category: string;
   city: string;
   state: string;
@@ -66,6 +67,7 @@ interface FormState {
 const initial: FormState = {
   photo: null,
   name: "",
+  ledBy: "",
   category: "",
   city: "",
   state: "",
