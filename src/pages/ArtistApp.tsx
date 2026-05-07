@@ -120,6 +120,7 @@ const ArtistApp = () => {
 
   const validateStep1 = () => {
     if (!form.name.trim()) return "Please enter your artist / troupe name";
+    if (!form.ledBy.trim()) return "Please enter the name of the person leading the troupe";
     if (!form.category) return "Select a category";
     if (!form.city.trim() || !form.state.trim()) return "Enter city and state";
     if (!/^\d{10}$/.test(form.phone)) return "Enter a valid 10-digit phone";
