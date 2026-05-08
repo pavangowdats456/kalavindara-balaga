@@ -86,8 +86,12 @@ const ArtistHome = () => {
               <Bell className="w-5 h-5" />
             </button>
             <button
-              aria-label="Settings"
-              onClick={() => navigate("/artist-app")}
+              aria-label="Switch account"
+              onClick={() => {
+                localStorage.removeItem("kb_role");
+                localStorage.removeItem("kb_authed");
+                navigate("/login", { replace: true });
+              }}
               className="w-9 h-9 grid place-items-center rounded-full hover:bg-muted"
             >
               <Settings className="w-5 h-5" />
