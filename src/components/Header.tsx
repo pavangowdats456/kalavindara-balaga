@@ -73,7 +73,7 @@ export const Header = () => {
 
           {profile && (
             <Link
-              to="/artist-app"
+              to="/artist-home"
               aria-label="My artist profile"
               className="relative flex items-center gap-2 pl-1 pr-3 py-1 rounded-full bg-muted/70 hover:bg-muted transition-colors"
             >
