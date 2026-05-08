@@ -256,14 +256,6 @@ const ArtistHome = () => {
         </Tabs>
       </section>
 
-      {/* Floating Add post */}
-      <Link
-        to="/artist-app"
-        aria-label="Add post"
-        className="fixed bottom-6 right-5 w-14 h-14 rounded-full bg-gradient-festival text-primary-foreground grid place-items-center shadow-warm active:scale-95 transition-transform z-50"
-      >
-        <Plus className="w-6 h-6" strokeWidth={2.6} />
-      </Link>
     </div>
   );
 };
