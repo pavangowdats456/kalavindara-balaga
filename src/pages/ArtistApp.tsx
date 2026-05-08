@@ -468,20 +468,20 @@ const ArtistApp = () => {
                 variant="festival"
                 size="lg"
                 className="w-full"
-                onClick={() => {
-                  setForm(initial);
-                  setStep(1);
-                }}
+                onClick={() => navigate("/artist-home")}
               >
-                Edit profile
+                Go to my profile
               </Button>
               <Button
                 variant="outline"
                 size="lg"
                 className="w-full"
-                onClick={() => navigate("/")}
+                onClick={() => {
+                  setForm(initial);
+                  setStep(1);
+                }}
               >
-                Go to home
+                Edit details
               </Button>
             </div>
           </div>

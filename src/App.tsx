@@ -12,6 +12,7 @@ import About from "./pages/About";
 import Splash from "./pages/Splash";
 import Login from "./pages/Login";
 import ArtistApp from "./pages/ArtistApp";
+import ArtistHome from "./pages/ArtistHome";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/splash" element={<Splash />} />
           <Route path="/login" element={<Login />} />
           <Route path="/artist-app" element={<ArtistApp />} />
+          <Route path="/artist-home" element={<ArtistHome />} />
           <Route element={<AppLayout />}>
             <Route path="/" element={<Home />} />
             <Route path="/explore" element={<Explore />} />
