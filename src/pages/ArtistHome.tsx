@@ -1,26 +1,34 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
-  ArrowLeft,
-  Settings,
-  Share2,
-  Grid3x3,
-  Play,
-  Calendar,
-  MessageCircle,
   Bell,
-  BadgeCheck,
-  MapPin,
-  IndianRupee,
-  Plus,
+  LogOut,
   Pencil,
-  BarChart3,
-  Bookmark,
+  Eye,
+  MessageCircle,
+  Calendar,
+  IndianRupee,
+  TrendingUp,
+  Star,
+  MapPin,
+  Award,
+  Users,
+  Phone,
+  CheckCircle2,
+  Clock,
+  ArrowUpRight,
+  BadgeCheck,
   Drum,
   User,
+  Share2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 interface ArtistProfile {
   photo: string | null;
@@ -40,10 +48,46 @@ interface ArtistProfile {
   availability: string;
 }
 
+// Mock dashboard data — would come from backend later
+const insights = [
+  { label: "Profile views", value: 248, delta: "+18%", icon: Eye, tone: "text-primary" },
+  { label: "Inquiries", value: 12, delta: "+4 this week", icon: MessageCircle, tone: "text-secondary" },
+  { label: "Bookings", value: 3, delta: "2 confirmed", icon: Calendar, tone: "text-emerald-600" },
+  { label: "Earnings", value: "₹45k", delta: "this month", icon: IndianRupee, tone: "text-amber-600" },
+];
+
+const inquiries = [
+  {
+    id: 1,
+    name: "Ananya Rao",
+    event: "Wedding Sangeet",
+    date: "12 Dec 2025",
+    location: "Mysuru",
+    status: "new",
+  },
+  {
+    id: 2,
+    name: "Dasara Committee",
+    event: "Festival Performance",
+    date: "20 Oct 2025",
+    location: "Bengaluru",
+    status: "replied",
+  },
+  {
+    id: 3,
+    name: "Suresh Patil",
+    event: "Temple Event",
+    date: "5 Nov 2025",
+    location: "Hubli",
+    status: "new",
+  },
+];
+
+const weekly = [22, 35, 28, 48, 41, 60, 52];
+
 const ArtistHome = () => {
   const navigate = useNavigate();
   const [profile, setProfile] = useState<ArtistProfile | null>(null);
-  const [tab, setTab] = useState("posts");
 
   useEffect(() => {
     try {
@@ -57,211 +101,275 @@ const ArtistHome = () => {
 
   if (!profile) return null;
 
-  const posts = profile.media ?? [];
-  const stats = [
-    { label: "Posts", value: posts.length },
-    { label: "Bookings", value: 0 },
-    { label: "Followers", value: 0 },
-  ];
+  const max = Math.max(...weekly);
+  const days = ["M", "T", "W", "T", "F", "S", "S"];
+
+  const logout = () => {
+    localStorage.removeItem("kb_role");
+    localStorage.removeItem("kb_authed");
+    navigate("/login", { replace: true });
+  };
 
   return (
-    <div className="min-h-screen bg-background pt-[env(safe-area-inset-top)] pb-24">
-      {/* Top bar — IG style */}
+    <div className="min-h-screen bg-muted/30 pt-[env(safe-area-inset-top)] pb-10">
+      {/* Top bar */}
       <header className="sticky top-0 z-40 bg-background/90 backdrop-blur-md border-b border-border">
         <div className="flex items-center justify-between px-4 h-14">
-          <button
-            onClick={() => navigate("/")}
-            aria-label="Back"
-            className="w-9 h-9 grid place-items-center rounded-full hover:bg-muted"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </button>
-          <div className="flex items-center gap-1.5 font-display font-bold text-base">
-            <Drum className="w-4 h-4 text-primary" strokeWidth={2.4} />
-            <span className="truncate max-w-[180px]">@{profile.name.toLowerCase().replace(/\s+/g, "_")}</span>
-            <BadgeCheck className="w-4 h-4 text-primary" />
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-full bg-gradient-festival grid place-items-center">
+              <Drum className="w-4 h-4 text-primary-foreground" strokeWidth={2.4} />
+            </div>
+            <div className="leading-tight">
+              <div className="font-display font-bold text-sm">Artist Studio</div>
+              <div className="text-[10px] text-muted-foreground -mt-0.5">Dashboard</div>
+            </div>
           </div>
           <div className="flex items-center gap-1">
-            <button aria-label="Notifications" className="w-9 h-9 grid place-items-center rounded-full hover:bg-muted">
+            <button
+              aria-label="Notifications"
+              className="relative w-9 h-9 grid place-items-center rounded-full hover:bg-muted"
+            >
               <Bell className="w-5 h-5" />
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-primary" />
             </button>
             <button
-              aria-label="Switch account"
-              onClick={() => {
-                localStorage.removeItem("kb_role");
-                localStorage.removeItem("kb_authed");
-                navigate("/login", { replace: true });
-              }}
+              aria-label="Logout"
+              onClick={logout}
               className="w-9 h-9 grid place-items-center rounded-full hover:bg-muted"
             >
-              <Settings className="w-5 h-5" />
+              <LogOut className="w-5 h-5" />
             </button>
           </div>
         </div>
       </header>
 
-      {/* Profile header */}
-      <section className="px-5 pt-5">
-        <div className="flex items-center gap-5">
-          {/* Avatar with story ring */}
-          <div className="relative shrink-0">
-            <div className="p-[3px] rounded-full bg-gradient-festival">
-              <div className="w-20 h-20 rounded-full bg-background p-[2px]">
-                <div className="w-full h-full rounded-full overflow-hidden bg-muted grid place-items-center">
-                  {profile.photo ? (
-                    <img src={profile.photo} alt={profile.name} className="w-full h-full object-cover" />
-                  ) : (
-                    <User className="w-8 h-8 text-muted-foreground" />
-                  )}
-                </div>
+      <div className="px-4 pt-4 space-y-4">
+        {/* Greeting + profile chip */}
+        <div className="rounded-2xl bg-gradient-festival text-primary-foreground p-5 shadow-warm relative overflow-hidden">
+          <div className="absolute inset-0 opacity-15 bg-[radial-gradient(circle_at_85%_15%,white,transparent_45%)]" />
+          <div className="relative flex items-center gap-3">
+            <div className="w-14 h-14 rounded-full overflow-hidden bg-background/20 border-2 border-background/40 grid place-items-center shrink-0">
+              {profile.photo ? (
+                <img src={profile.photo} alt={profile.name} className="w-full h-full object-cover" />
+              ) : (
+                <User className="w-6 h-6" />
+              )}
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="text-xs opacity-90">Namaskara 🙏</div>
+              <div className="font-display text-lg font-bold flex items-center gap-1.5 truncate">
+                {profile.ledBy || profile.name}
+                <BadgeCheck className="w-4 h-4 shrink-0" />
+              </div>
+              <div className="text-[11px] opacity-85 truncate">
+                {profile.name} · {profile.category}
               </div>
             </div>
-            <span className="absolute bottom-0 right-0 w-5 h-5 rounded-full bg-emerald-500 border-2 border-background shadow-[0_0_10px_hsl(142_76%_45%/0.9)] animate-pulse" />
           </div>
+          <div className="relative mt-4 flex gap-2">
+            <Button
+              size="sm"
+              variant="secondary"
+              className="flex-1 bg-background/95 text-foreground hover:bg-background"
+              onClick={() => navigate("/artist-app")}
+            >
+              <Pencil className="w-3.5 h-3.5" /> Edit profile
+            </Button>
+            <Button
+              size="sm"
+              variant="secondary"
+              className="flex-1 bg-background/15 text-primary-foreground border border-background/30 hover:bg-background/25"
+            >
+              <Share2 className="w-3.5 h-3.5" /> Share
+            </Button>
+          </div>
+        </div>
 
-          {/* Stats */}
-          <div className="flex-1 grid grid-cols-3 text-center">
-            {stats.map((s) => (
-              <div key={s.label}>
-                <div className="font-display text-lg font-bold">{s.value}</div>
-                <div className="text-[11px] text-muted-foreground">{s.label}</div>
-              </div>
+        {/* Insights grid */}
+        <div>
+          <SectionTitle icon={TrendingUp} title="Insights" hint="Last 30 days" />
+          <div className="grid grid-cols-2 gap-3 mt-2">
+            {insights.map((s) => (
+              <Card key={s.label} className="shadow-soft">
+                <CardContent className="p-4">
+                  <div className={`w-9 h-9 rounded-lg bg-muted grid place-items-center ${s.tone}`}>
+                    <s.icon className="w-4 h-4" />
+                  </div>
+                  <div className="font-display text-2xl font-bold mt-3">{s.value}</div>
+                  <div className="text-[11px] text-muted-foreground">{s.label}</div>
+                  <div className="text-[10px] text-emerald-600 font-semibold mt-1 inline-flex items-center gap-0.5">
+                    <ArrowUpRight className="w-3 h-3" />
+                    {s.delta}
+                  </div>
+                </CardContent>
+              </Card>
             ))}
           </div>
         </div>
 
-        {/* Name + bio */}
-        <div className="mt-4">
-          <div className="flex items-center gap-2">
-            <h1 className="font-display text-lg font-bold">{profile.name}</h1>
-            <span className="text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-primary/10 text-primary font-semibold">
-              {profile.category}
-            </span>
-          </div>
-          <div className="text-xs text-muted-foreground mt-0.5">Led by {profile.ledBy}</div>
-          <p className="text-sm mt-2 leading-relaxed whitespace-pre-line">{profile.bio}</p>
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2 text-xs text-muted-foreground">
-            <span className="inline-flex items-center gap-1">
-              <MapPin className="w-3.5 h-3.5" /> {profile.city}, {profile.state}
-            </span>
-            <span className="inline-flex items-center gap-1">
-              <IndianRupee className="w-3.5 h-3.5" /> from ₹{profile.pricing || "—"}
-            </span>
-            {profile.experience && <span>· {profile.experience} yrs experience</span>}
-          </div>
-        </div>
-
-        {/* Action buttons */}
-        <div className="mt-4 grid grid-cols-3 gap-2">
-          <Button variant="secondary" size="sm" className="font-semibold" onClick={() => navigate("/artist-app")}>
-            <Pencil className="w-3.5 h-3.5" /> Edit
-          </Button>
-          <Button variant="secondary" size="sm" className="font-semibold">
-            <Share2 className="w-3.5 h-3.5" /> Share
-          </Button>
-          <Button variant="festival" size="sm" className="font-semibold">
-            <Plus className="w-3.5 h-3.5" /> Post
-          </Button>
-        </div>
-
-        {/* Quick add-on features */}
-        <div className="mt-5 grid grid-cols-4 gap-2">
-          {[
-            { icon: Calendar, label: "Calendar" },
-            { icon: MessageCircle, label: "Inquiries" },
-            { icon: BarChart3, label: "Insights" },
-            { icon: Bookmark, label: "Saved" },
-          ].map((it) => (
-            <button
-              key={it.label}
-              className="flex flex-col items-center gap-1.5 py-3 rounded-xl bg-muted/60 hover:bg-muted transition-colors"
-            >
-              <it.icon className="w-5 h-5 text-primary" />
-              <span className="text-[10px] font-medium">{it.label}</span>
-            </button>
-          ))}
-        </div>
-
-        {/* Performance type chips */}
-        {profile.performanceTypes?.length > 0 && (
-          <div className="mt-5">
-            <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground font-semibold mb-2">
-              Performs at
+        {/* Profile views chart */}
+        <Card className="shadow-soft">
+          <CardHeader className="pb-2">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-sm font-display">Profile views this week</CardTitle>
+              <span className="text-[11px] text-muted-foreground">7 days</span>
             </div>
-            <div className="flex flex-wrap gap-1.5">
-              {profile.performanceTypes.map((p) => (
-                <span
-                  key={p}
-                  className="text-xs px-2.5 py-1 rounded-full bg-secondary/15 text-secondary-foreground border border-secondary/20"
-                >
-                  {p}
-                </span>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-end justify-between h-28 gap-2">
+              {weekly.map((v, i) => (
+                <div key={i} className="flex-1 flex flex-col items-center gap-1.5">
+                  <div
+                    className="w-full rounded-t-md bg-gradient-to-t from-primary to-secondary"
+                    style={{ height: `${(v / max) * 100}%`, minHeight: 4 }}
+                  />
+                  <span className="text-[10px] text-muted-foreground">{days[i]}</span>
+                </div>
               ))}
             </div>
-          </div>
-        )}
-      </section>
+          </CardContent>
+        </Card>
 
-      {/* Tabs */}
-      <section className="mt-6">
-        <Tabs value={tab} onValueChange={setTab}>
-          <TabsList className="w-full bg-transparent border-y border-border rounded-none h-12 p-0">
-            <TabsTrigger
-              value="posts"
-              className="flex-1 h-full rounded-none data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none"
-            >
-              <Grid3x3 className="w-4 h-4" />
-            </TabsTrigger>
-            <TabsTrigger
-              value="reels"
-              className="flex-1 h-full rounded-none data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none"
-            >
-              <Play className="w-4 h-4" />
-            </TabsTrigger>
-            <TabsTrigger
-              value="bookings"
-              className="flex-1 h-full rounded-none data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none"
-            >
-              <Calendar className="w-4 h-4" />
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="posts" className="mt-0">
-            {posts.length === 0 ? (
-              <EmptyState label="No posts yet. Share your first performance." />
-            ) : (
-              <div className="grid grid-cols-3 gap-[2px]">
-                {posts.map((src, i) => (
-                  <div key={i} className="aspect-square bg-muted overflow-hidden">
-                    <img src={src} alt={`post-${i}`} className="w-full h-full object-cover" />
+        {/* Inquiries */}
+        <div>
+          <SectionTitle icon={MessageCircle} title="Recent inquiries" hint={`${inquiries.length} new`} />
+          <div className="mt-2 space-y-2">
+            {inquiries.map((q) => (
+              <Card key={q.id} className="shadow-soft">
+                <CardContent className="p-4 flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-primary/10 text-primary grid place-items-center font-semibold shrink-0">
+                    {q.name.charAt(0)}
                   </div>
-                ))}
-              </div>
-            )}
-          </TabsContent>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <div className="font-semibold text-sm truncate">{q.name}</div>
+                      {q.status === "new" ? (
+                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-primary/10 text-primary font-semibold">
+                          NEW
+                        </span>
+                      ) : (
+                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground font-semibold inline-flex items-center gap-0.5">
+                          <CheckCircle2 className="w-2.5 h-2.5" /> REPLIED
+                        </span>
+                      )}
+                    </div>
+                    <div className="text-xs text-muted-foreground truncate">{q.event}</div>
+                    <div className="text-[11px] text-muted-foreground mt-0.5 inline-flex items-center gap-2">
+                      <span className="inline-flex items-center gap-0.5">
+                        <Clock className="w-3 h-3" /> {q.date}
+                      </span>
+                      <span className="inline-flex items-center gap-0.5">
+                        <MapPin className="w-3 h-3" /> {q.location}
+                      </span>
+                    </div>
+                  </div>
+                  <Button size="sm" variant="ghost" className="shrink-0">
+                    <Phone className="w-4 h-4" />
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
 
-          <TabsContent value="reels" className="mt-0">
-            <EmptyState label="Upload short reels to attract more bookings." />
-          </TabsContent>
-
-          <TabsContent value="bookings" className="mt-0">
-            <div className="px-5 py-8 text-center">
-              <Calendar className="w-10 h-10 text-muted-foreground mx-auto" />
-              <p className="text-sm text-muted-foreground mt-2">No bookings yet.</p>
-              <p className="text-xs text-muted-foreground mt-1">
-                Availability: {profile.availability || "Add your availability"}
-              </p>
-            </div>
-          </TabsContent>
-        </Tabs>
-      </section>
-
+        {/* Profession info */}
+        <div>
+          <SectionTitle icon={Award} title="Profession" />
+          <Card className="shadow-soft mt-2">
+            <CardContent className="p-4 space-y-3">
+              <InfoRow icon={Award} label="Category" value={profile.category} />
+              <InfoRow
+                icon={Users}
+                label="Team"
+                value={
+                  profile.teamSize === "Group"
+                    ? `Group · ${profile.groupCount || "—"} members`
+                    : profile.teamSize || "—"
+                }
+              />
+              <InfoRow
+                icon={Star}
+                label="Experience"
+                value={profile.experience ? `${profile.experience} years` : "—"}
+              />
+              <InfoRow
+                icon={IndianRupee}
+                label="Starting price"
+                value={profile.pricing ? `₹${profile.pricing}` : "—"}
+              />
+              <InfoRow
+                icon={MapPin}
+                label="Location"
+                value={`${profile.city}, ${profile.state}`}
+              />
+              <InfoRow
+                icon={Calendar}
+                label="Availability"
+                value={profile.availability || "Not specified"}
+              />
+              {profile.performanceTypes?.length > 0 && (
+                <div>
+                  <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mb-1.5">
+                    Performs at
+                  </div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {profile.performanceTypes.map((p) => (
+                      <span
+                        key={p}
+                        className="text-xs px-2.5 py-1 rounded-full bg-secondary/15 text-secondary-foreground border border-secondary/20"
+                      >
+                        {p}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      </div>
     </div>
   );
 };
 
-const EmptyState = ({ label }: { label: string }) => (
-  <div className="px-5 py-10 text-center text-sm text-muted-foreground">{label}</div>
+const SectionTitle = ({
+  icon: Icon,
+  title,
+  hint,
+}: {
+  icon: React.ComponentType<{ className?: string }>;
+  title: string;
+  hint?: string;
+}) => (
+  <div className="flex items-center justify-between px-1">
+    <div className="inline-flex items-center gap-2">
+      <Icon className="w-4 h-4 text-primary" />
+      <h2 className="font-display font-bold text-sm">{title}</h2>
+    </div>
+    {hint && <span className="text-[11px] text-muted-foreground">{hint}</span>}
+  </div>
+);
+
+const InfoRow = ({
+  icon: Icon,
+  label,
+  value,
+}: {
+  icon: React.ComponentType<{ className?: string }>;
+  label: string;
+  value: string;
+}) => (
+  <div className="flex items-start gap-3">
+    <div className="w-8 h-8 rounded-lg bg-muted grid place-items-center shrink-0">
+      <Icon className="w-4 h-4 text-muted-foreground" />
+    </div>
+    <div className="flex-1 min-w-0">
+      <div className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">
+        {label}
+      </div>
+      <div className="text-sm font-medium">{value}</div>
+    </div>
+  </div>
 );
 
 export default ArtistHome;
