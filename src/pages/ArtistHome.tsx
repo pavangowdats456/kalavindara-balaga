@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import {
   Bell,
   LogOut,
-  Pencil,
   Eye,
   MessageCircle,
   Calendar,
@@ -17,10 +16,8 @@ import {
   CheckCircle2,
   Clock,
   ArrowUpRight,
-  BadgeCheck,
   Drum,
   User,
-  Share2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -144,47 +141,6 @@ const ArtistHome = () => {
       </header>
 
       <div className="px-4 pt-4 space-y-4">
-        {/* Greeting + profile chip */}
-        <div className="rounded-2xl bg-gradient-festival text-primary-foreground p-5 shadow-warm relative overflow-hidden">
-          <div className="absolute inset-0 opacity-15 bg-[radial-gradient(circle_at_85%_15%,white,transparent_45%)]" />
-          <div className="relative flex items-center gap-3">
-            <div className="w-14 h-14 rounded-full overflow-hidden bg-background/20 border-2 border-background/40 grid place-items-center shrink-0">
-              {profile.photo ? (
-                <img src={profile.photo} alt={profile.name} className="w-full h-full object-cover" />
-              ) : (
-                <User className="w-6 h-6" />
-              )}
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="text-xs opacity-90">Namaskara 🙏</div>
-              <div className="font-display text-lg font-bold flex items-center gap-1.5 truncate">
-                {profile.ledBy || profile.name}
-                <BadgeCheck className="w-4 h-4 shrink-0" />
-              </div>
-              <div className="text-[11px] opacity-85 truncate">
-                {profile.name} · {profile.category}
-              </div>
-            </div>
-          </div>
-          <div className="relative mt-4 flex gap-2">
-            <Button
-              size="sm"
-              variant="secondary"
-              className="flex-1 bg-background/95 text-foreground hover:bg-background"
-              onClick={() => navigate("/artist-app")}
-            >
-              <Pencil className="w-3.5 h-3.5" /> Edit profile
-            </Button>
-            <Button
-              size="sm"
-              variant="secondary"
-              className="flex-1 bg-background/15 text-primary-foreground border border-background/30 hover:bg-background/25"
-            >
-              <Share2 className="w-3.5 h-3.5" /> Share
-            </Button>
-          </div>
-        </div>
-
         {/* Insights grid */}
         <div>
           <SectionTitle icon={TrendingUp} title="Insights" hint="Last 30 days" />
