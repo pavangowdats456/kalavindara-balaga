@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import {
   Bell,
   LogOut,
-  Pencil,
   Eye,
   MessageCircle,
   Calendar,
@@ -17,10 +16,8 @@ import {
   CheckCircle2,
   Clock,
   ArrowUpRight,
-  BadgeCheck,
   Drum,
   User,
-  Share2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
