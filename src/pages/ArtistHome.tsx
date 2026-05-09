@@ -91,6 +91,7 @@ const weekly = [22, 35, 28, 48, 41, 60, 52];
 const ArtistHome = () => {
   const navigate = useNavigate();
   const [profile, setProfile] = useState<ArtistProfile | null>(null);
+  const [eventPhotos, setEventPhotos] = useState<string[]>([]);
 
   useEffect(() => {
     try {
@@ -100,12 +101,47 @@ const ArtistHome = () => {
     } catch {
       navigate("/artist-app", { replace: true });
     }
+    try {
+      const ph = localStorage.getItem("kb_artist_event_photos");
+      if (ph) setEventPhotos(JSON.parse(ph));
+    } catch {
+      // ignore
+    }
   }, [navigate]);
 
   if (!profile) return null;
 
   const max = Math.max(...weekly);
   const days = ["M", "T", "W", "T", "F", "S", "S"];
+
+  const persistPhotos = (next: string[]) => {
+    setEventPhotos(next);
+    try {
+      localStorage.setItem("kb_artist_event_photos", JSON.stringify(next));
+    } catch {
+      // ignore quota errors
+    }
+  };
+
+  const handleAddPhotos = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    if (!files.length) return;
+    Promise.all(
+      files.map(
+        (f) =>
+          new Promise<string>((resolve, reject) => {
+            const r = new FileReader();
+            r.onload = () => resolve(String(r.result));
+            r.onerror = reject;
+            r.readAsDataURL(f);
+          })
+      )
+    ).then((urls) => persistPhotos([...urls, ...eventPhotos]));
+    e.target.value = "";
+  };
+
+  const removePhoto = (idx: number) =>
+    persistPhotos(eventPhotos.filter((_, i) => i !== idx));
 
   const logout = () => {
     localStorage.removeItem("kb_role");
