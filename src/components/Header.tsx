@@ -70,30 +70,6 @@ export const Header = () => {
           >
             <Search className="w-4 h-4" />
           </Link>
-
-          {profile && (
-            <Link
-              to="/artist-home"
-              aria-label="My artist profile"
-              className="relative flex items-center gap-2 pl-1 pr-3 py-1 rounded-full bg-muted/70 hover:bg-muted transition-colors"
-            >
-              <span className="relative w-8 h-8 rounded-full overflow-hidden bg-gradient-festival grid place-items-center text-primary-foreground">
-                {profile.photo ? (
-                  <img src={profile.photo} alt={profile.name} className="w-full h-full object-cover" />
-                ) : (
-                  <User className="w-4 h-4" />
-                )}
-                {/* LED indicator */}
-                <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-500 border-2 border-background shadow-[0_0_8px_hsl(142_76%_45%/0.9)] animate-pulse" />
-              </span>
-              <span className="hidden sm:block leading-tight text-left">
-                <span className="block text-[11px] text-muted-foreground -mb-0.5">Led by</span>
-                <span className="block text-xs font-semibold text-foreground truncate max-w-[110px]">
-                  {profile.ledBy || profile.name}
-                </span>
-              </span>
-            </Link>
-          )}
         </div>
       </div>
     </header>
