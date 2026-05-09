@@ -1,6 +1,5 @@
-import { Drum, Search, User } from "lucide-react";
+import { Drum, Search } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
 
 const links = [
   { label: "Home", to: "/" },
@@ -9,33 +8,8 @@ const links = [
   { label: "About", to: "/about" },
 ];
 
-interface ArtistProfile {
-  photo: string | null;
-  name: string;
-  ledBy: string;
-}
-
 export const Header = () => {
   const { pathname } = useLocation();
-  const [profile, setProfile] = useState<ArtistProfile | null>(null);
-
-  useEffect(() => {
-    const read = () => {
-      try {
-        const raw = localStorage.getItem("kb_artist_profile");
-        setProfile(raw ? JSON.parse(raw) : null);
-      } catch {
-        setProfile(null);
-      }
-    };
-    read();
-    window.addEventListener("storage", read);
-    window.addEventListener("focus", read);
-    return () => {
-      window.removeEventListener("storage", read);
-      window.removeEventListener("focus", read);
-    };
-  }, [pathname]);
 
   return (
     <header className="sticky top-0 z-50 backdrop-blur-md bg-background/85 border-b border-border/60 pt-[env(safe-area-inset-top)]">
