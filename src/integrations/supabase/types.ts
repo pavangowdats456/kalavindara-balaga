@@ -38,6 +38,36 @@ export type Database = {
         }
         Relationships: []
       }
+      phone_otp: {
+        Row: {
+          attempts: number
+          code_hash: string
+          consumed: boolean
+          created_at: string
+          expires_at: string
+          id: string
+          phone: string
+        }
+        Insert: {
+          attempts?: number
+          code_hash: string
+          consumed?: boolean
+          created_at?: string
+          expires_at: string
+          id?: string
+          phone: string
+        }
+        Update: {
+          attempts?: number
+          code_hash?: string
+          consumed?: boolean
+          created_at?: string
+          expires_at?: string
+          id?: string
+          phone?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -45,6 +75,7 @@ export type Database = {
           category: string | null
           city: string | null
           created_at: string
+          equipment: string | null
           full_name: string | null
           hourly_rate: number | null
           id: string
@@ -60,6 +91,7 @@ export type Database = {
           category?: string | null
           city?: string | null
           created_at?: string
+          equipment?: string | null
           full_name?: string | null
           hourly_rate?: number | null
           id?: string
@@ -75,6 +107,7 @@ export type Database = {
           category?: string | null
           city?: string | null
           created_at?: string
+          equipment?: string | null
           full_name?: string | null
           hourly_rate?: number | null
           id?: string
