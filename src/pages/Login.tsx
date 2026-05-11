@@ -159,8 +159,8 @@ const Login = () => {
               </div>
             </div>
 
-            <Button variant="festival" size="lg" className="w-full" onClick={sendOtp}>
-              Send OTP <ArrowRight className="w-4 h-4" />
+            <Button variant="festival" size="lg" className="w-full" onClick={sendOtp} disabled={loading}>
+              {loading ? "Sending..." : <>Send OTP <ArrowRight className="w-4 h-4" /></>}
             </Button>
             <button
               onClick={() => setStep("role")}
