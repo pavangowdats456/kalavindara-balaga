@@ -4,6 +4,7 @@ import { Drum, Phone, ArrowRight, Palette, Search, ShieldCheck } from "lucide-re
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 type Role = "artist" | "client";
 type Step = "role" | "phone" | "otp";
@@ -14,29 +15,55 @@ const Login = () => {
   const [step, setStep] = useState<Step>("role");
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const pickRole = (r: Role) => {
     setRole(r);
     setStep("phone");
   };
 
-  const sendOtp = () => {
+  const sendOtp = async () => {
     if (!/^\d{10}$/.test(phone)) {
       toast({ title: "Enter a valid 10-digit number", variant: "destructive" });
       return;
     }
-    toast({ title: "OTP sent", description: `Code sent to +91 ${phone}. Use 1234 to continue.` });
+    setLoading(true);
+    const { data, error } = await supabase.functions.invoke("send-otp", { body: { phone } });
+    setLoading(false);
+    if (error || (data as any)?.error) {
+      toast({ title: "Failed to send OTP", description: (data as any)?.error || error?.message, variant: "destructive" });
+      return;
+    }
+    toast({ title: "OTP sent", description: `Code sent to +91 ${phone}` });
     setStep("otp");
   };
 
-  const verify = () => {
-    if (otp.length !== 4) {
-      toast({ title: "Enter the 4-digit OTP", variant: "destructive" });
+  const verify = async () => {
+    if (otp.length !== 6) {
+      toast({ title: "Enter the 6-digit OTP", variant: "destructive" });
       return;
+    }
+    setLoading(true);
+    const apiRole = role === "artist" ? "artist" : "customer";
+    const { data, error } = await supabase.functions.invoke("verify-otp", {
+      body: { phone, code: otp, role: apiRole },
+    });
+    if (error || (data as any)?.error) {
+      setLoading(false);
+      toast({ title: "Verification failed", description: (data as any)?.error || error?.message, variant: "destructive" });
+      return;
+    }
+    const session = (data as any)?.session;
+    if (session?.access_token) {
+      await supabase.auth.setSession({
+        access_token: session.access_token,
+        refresh_token: session.refresh_token,
+      });
     }
     localStorage.setItem("kb_authed", "1");
     localStorage.setItem("kb_role", role ?? "client");
     localStorage.setItem("kb_phone", phone);
+    setLoading(false);
     toast({ title: "Welcome to Kalavidara-Balaga!" });
     navigate(role === "artist" ? "/artist-app" : "/", { replace: true });
   };
@@ -132,8 +159,8 @@ const Login = () => {
               </div>
             </div>
 
-            <Button variant="festival" size="lg" className="w-full" onClick={sendOtp}>
-              Send OTP <ArrowRight className="w-4 h-4" />
+            <Button variant="festival" size="lg" className="w-full" onClick={sendOtp} disabled={loading}>
+              {loading ? "Sending..." : <>Send OTP <ArrowRight className="w-4 h-4" /></>}
             </Button>
             <button
               onClick={() => setStep("role")}
@@ -148,20 +175,20 @@ const Login = () => {
           <div className="space-y-4 animate-float-up">
             <div className="rounded-2xl bg-card border border-border p-5 shadow-soft">
               <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                Enter 4-digit OTP
+                Enter 6-digit OTP
               </label>
               <Input
                 inputMode="numeric"
-                maxLength={4}
+                maxLength={6}
                 value={otp}
                 onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
-                placeholder="1234"
-                className="mt-2 text-center text-2xl tracking-[0.6em] font-bold h-14"
+                placeholder="123456"
+                className="mt-2 text-center text-2xl tracking-[0.5em] font-bold h-14"
               />
-              <button className="text-xs text-primary font-semibold mt-3">Resend code</button>
+              <button onClick={sendOtp} className="text-xs text-primary font-semibold mt-3">Resend code</button>
             </div>
-            <Button variant="festival" size="lg" className="w-full" onClick={verify}>
-              Verify & Continue <ArrowRight className="w-4 h-4" />
+            <Button variant="festival" size="lg" className="w-full" onClick={verify} disabled={loading}>
+              {loading ? "Verifying..." : <>Verify & Continue <ArrowRight className="w-4 h-4" /></>}
             </Button>
             <button
               onClick={() => setStep("phone")}
