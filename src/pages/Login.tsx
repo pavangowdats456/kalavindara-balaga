@@ -4,6 +4,7 @@ import { Drum, Phone, ArrowRight, Palette, Search, ShieldCheck } from "lucide-re
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 type Role = "artist" | "client";
 type Step = "role" | "phone" | "otp";
@@ -14,29 +15,55 @@ const Login = () => {
   const [step, setStep] = useState<Step>("role");
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const pickRole = (r: Role) => {
     setRole(r);
     setStep("phone");
   };
 
-  const sendOtp = () => {
+  const sendOtp = async () => {
     if (!/^\d{10}$/.test(phone)) {
       toast({ title: "Enter a valid 10-digit number", variant: "destructive" });
       return;
     }
-    toast({ title: "OTP sent", description: `Code sent to +91 ${phone}. Use 1234 to continue.` });
+    setLoading(true);
+    const { data, error } = await supabase.functions.invoke("send-otp", { body: { phone } });
+    setLoading(false);
+    if (error || (data as any)?.error) {
+      toast({ title: "Failed to send OTP", description: (data as any)?.error || error?.message, variant: "destructive" });
+      return;
+    }
+    toast({ title: "OTP sent", description: `Code sent to +91 ${phone}` });
     setStep("otp");
   };
 
-  const verify = () => {
-    if (otp.length !== 4) {
-      toast({ title: "Enter the 4-digit OTP", variant: "destructive" });
+  const verify = async () => {
+    if (otp.length !== 6) {
+      toast({ title: "Enter the 6-digit OTP", variant: "destructive" });
       return;
+    }
+    setLoading(true);
+    const apiRole = role === "artist" ? "artist" : "customer";
+    const { data, error } = await supabase.functions.invoke("verify-otp", {
+      body: { phone, code: otp, role: apiRole },
+    });
+    if (error || (data as any)?.error) {
+      setLoading(false);
+      toast({ title: "Verification failed", description: (data as any)?.error || error?.message, variant: "destructive" });
+      return;
+    }
+    const session = (data as any)?.session;
+    if (session?.access_token) {
+      await supabase.auth.setSession({
+        access_token: session.access_token,
+        refresh_token: session.refresh_token,
+      });
     }
     localStorage.setItem("kb_authed", "1");
     localStorage.setItem("kb_role", role ?? "client");
     localStorage.setItem("kb_phone", phone);
+    setLoading(false);
     toast({ title: "Welcome to Kalavidara-Balaga!" });
     navigate(role === "artist" ? "/artist-app" : "/", { replace: true });
   };
