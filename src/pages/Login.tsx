@@ -175,20 +175,20 @@ const Login = () => {
           <div className="space-y-4 animate-float-up">
             <div className="rounded-2xl bg-card border border-border p-5 shadow-soft">
               <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                Enter 4-digit OTP
+                Enter 6-digit OTP
               </label>
               <Input
                 inputMode="numeric"
-                maxLength={4}
+                maxLength={6}
                 value={otp}
                 onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
-                placeholder="1234"
-                className="mt-2 text-center text-2xl tracking-[0.6em] font-bold h-14"
+                placeholder="123456"
+                className="mt-2 text-center text-2xl tracking-[0.5em] font-bold h-14"
               />
-              <button className="text-xs text-primary font-semibold mt-3">Resend code</button>
+              <button onClick={sendOtp} className="text-xs text-primary font-semibold mt-3">Resend code</button>
             </div>
-            <Button variant="festival" size="lg" className="w-full" onClick={verify}>
-              Verify & Continue <ArrowRight className="w-4 h-4" />
+            <Button variant="festival" size="lg" className="w-full" onClick={verify} disabled={loading}>
+              {loading ? "Verifying..." : <>Verify & Continue <ArrowRight className="w-4 h-4" /></>}
             </Button>
             <button
               onClick={() => setStep("phone")}
