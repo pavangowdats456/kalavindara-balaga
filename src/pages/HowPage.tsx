@@ -1,39 +1,192 @@
-import { HowItWorks } from "@/components/HowItWorks";
-import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
-import { ArrowRight } from "lucide-react";
+package com.example.kalavidarabalaga
 
-const HowPage = () => {
-  return (
-    <>
-      <title>How Kalavidara-Balaga Works | Book Folk Artists Easily</title>
-      <meta name="description" content="Learn how to book authentic Karnataka folk troupes in 4 simple steps." />
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.*
+import androidx.compose.ui.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
-      <section className="bg-gradient-festival pt-8 pb-12 text-primary-foreground">
-        <div className="container">
-          <div className="text-[10px] uppercase tracking-[0.25em] opacity-80 font-semibold">Guide</div>
-          <h1 className="font-display text-3xl md:text-5xl font-bold mt-1.5">How it works</h1>
-          <p className="mt-2 text-sm md:text-base text-primary-foreground/85 max-w-xl">
-            From discovery to celebration — a simple, direct path between artists and event organisers.
-          </p>
-        </div>
-      </section>
+@Composable
+fun HomeScreen(
+    artists: List<Artist>,
+    onExploreClick: () -> Unit,
+    onArtistClick: (Artist) -> Unit,
+    onArtFormClick: (String) -> Unit
+) {
 
-      <HowItWorks />
+    val featured = artists.take(4)
 
-      <section className="container pb-12">
-        <div className="rounded-2xl border border-border/60 bg-gradient-card p-6 md:p-8 text-center">
-          <h2 className="font-display text-2xl md:text-3xl font-bold">Ready to book a troupe?</h2>
-          <p className="text-muted-foreground mt-2 max-w-md mx-auto text-sm md:text-base">
-            Browse artists by district and art form, and call them directly — no middlemen.
-          </p>
-          <Button variant="festival" size="lg" asChild className="mt-5 rounded-full h-12 px-6">
-            <Link to="/explore">Explore artists <ArrowRight className="w-4 h-4" /></Link>
-          </Button>
-        </div>
-      </section>
-    </>
-  );
-};
+    Column(
+        modifier = Modifier.fillMaxSize()
+    ) {
 
-export default HowPage;
+        // HERO SECTION
+        HeroSection()
+
+        // FEATURED SECTION
+        Column(
+            modifier = Modifier.padding(
+                horizontal = 16.dp,
+                vertical = 20.dp
+            )
+        ) {
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Bottom
+            ) {
+
+                Column {
+
+                    Text(
+                        text = "FEATURED",
+                        fontSize = 10.sp,
+                        letterSpacing = 2.sp,
+                        color = MaterialTheme.colorScheme.secondary,
+                        fontWeight = FontWeight.SemiBold
+                    )
+
+                    Spacer(modifier = Modifier.height(6.dp))
+
+                    Text(
+                        text = "Top troupes this season",
+                        fontSize = 28.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
+                TextButton(
+                    onClick = onExploreClick
+                ) {
+
+                    Text("See all")
+
+                    Icon(
+                        imageVector = Icons.Default.ArrowForward,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp)
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(18.dp))
+
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                modifier = Modifier.height(500.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+
+                items(featured) { artist ->
+
+                    ArtistCard(
+                        artist = artist,
+                        onClick = {
+                            onArtistClick(artist)
+                        }
+                    )
+                }
+            }
+        }
+
+        // ART FORMS SECTION
+        ArtFormsStrip(
+            onPick = onArtFormClick
+        )
+    }
+}
+
+@Composable
+fun HeroSection() {
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        shape = MaterialTheme.shapes.large
+    ) {
+
+        Column(
+            modifier = Modifier.padding(24.dp)
+        ) {
+
+            Text(
+                text = "Kalavidara-Balaga",
+                fontSize = 34.sp,
+                fontWeight = FontWeight.Bold
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Text(
+                text = "Book traditional Karnataka folk troupes — Dollu Kunitha, Yakshagana, Veeragase — directly from rural artists.",
+                fontSize = 15.sp,
+                lineHeight = 24.sp
+            )
+
+            Spacer(modifier = Modifier.height(18.dp))
+
+            Button(
+                onClick = {}
+            ) {
+
+                Text("Explore Artists")
+            }
+        }
+    }
+}
+
+@Composable
+fun ArtFormsStrip(
+    onPick: (String) -> Unit
+) {
+
+    val artForms = listOf(
+        "Yakshagana",
+        "Dollu Kunitha",
+        "Veeragase",
+        "Bharatanatyam",
+        "Folk Dance",
+        "Drama"
+    )
+
+    Column(
+        modifier = Modifier.padding(16.dp)
+    ) {
+
+        Text(
+            text = "Popular Art Forms",
+            fontSize = 22.sp,
+            fontWeight = FontWeight.Bold
+        )
+
+        Spacer(modifier = Modifier.height(14.dp))
+
+        FlowRow(
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+
+            artForms.forEach { form ->
+
+                AssistChip(
+                    onClick = {
+                        onPick(form)
+                    },
+                    label = {
+                        Text(form)
+                    }
+                )
+            }
+        }
+    }
+}
