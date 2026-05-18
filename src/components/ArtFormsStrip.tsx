@@ -1,52 +1,182 @@
-import dollu from "@/assets/hero-dollu.jpg";
-import pooja from "@/assets/art-pooja.jpg";
-import yaksha from "@/assets/art-yakshagana.jpg";
-import veera from "@/assets/art-veeragase.jpg";
-import kamsale from "@/assets/art-kamsale.jpg";
-import nagari from "@/assets/art-nagari.jpg";
-import suggi from "@/assets/art-suggi.jpg";
+package com.example.kalavidarabalaga.ui.components
 
-const items = [
-  { name: "Dollu Kunitha", img: dollu, note: "Thunder of the drums" },
-  { name: "Yakshagana", img: yaksha, note: "All-night theatre" },
-  { name: "Pooja Kunitha", img: pooja, note: "Sacred procession" },
-  { name: "Veeragase", img: veera, note: "Warrior trance" },
-  { name: "Kamsale", img: kamsale, note: "Brass cymbal devotion" },
-  { name: "Nagari", img: nagari, note: "Festive baraat" },
-  { name: "Suggi", img: suggi, note: "Harvest joy" },
-];
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import androidx.compose.foundation.background
+import androidx.compose.ui.graphics.Color
 
-interface Props { onPick: (name: string) => void; }
+data class ArtFormItem(
+    val name: String,
+    val img: String,
+    val note: String
+)
 
-export const ArtFormsStrip = ({ onPick }: Props) => {
-  return (
-    <section id="artforms" className="container py-12 md:py-28">
-      <div className="flex items-end justify-between flex-wrap gap-3 mb-6 md:mb-8">
-        <div>
-          <div className="text-xs uppercase tracking-[0.25em] text-secondary font-semibold">Heritage</div>
-          <h2 className="font-display text-3xl md:text-5xl font-bold mt-2">Living folk traditions</h2>
-        </div>
-        <p className="text-sm md:text-base text-muted-foreground max-w-md">
-          Tap an art form to discover its troupes.
-        </p>
-      </div>
-      <div className="flex gap-3 md:gap-4 overflow-x-auto pb-4 -mx-4 px-4 snap-x scrollbar-none">
-        {items.map((it, i) => (
-          <button
-            key={it.name}
-            onClick={() => onPick(it.name)}
-            className="snap-start shrink-0 w-40 md:w-64 group relative rounded-2xl overflow-hidden aspect-[3/4] shadow-soft sm:hover:shadow-warm transition-all duration-500 sm:hover:-translate-y-1 animate-float-up"
-            style={{ animationDelay: `${i * 50}ms` }}
-          >
-            <img src={it.img} alt={it.name} loading="lazy" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-            <div className="absolute inset-0 bg-gradient-to-t from-foreground via-foreground/40 to-transparent" />
-            <div className="absolute bottom-0 left-0 right-0 p-3 md:p-4 text-background text-left">
-              <div className="font-display text-base md:text-xl font-bold leading-tight">{it.name}</div>
-              <div className="text-[10px] md:text-xs text-background/80 mt-0.5">{it.note}</div>
-            </div>
-          </button>
-        ))}
-      </div>
-    </section>
-  );
-};
+private val items = listOf(
+    ArtFormItem(
+        "Dollu Kunitha",
+        "file:///android_asset/hero_dollu.jpg",
+        "Thunder of the drums"
+    ),
+    ArtFormItem(
+        "Yakshagana",
+        "file:///android_asset/art_yakshagana.jpg",
+        "All-night theatre"
+    ),
+    ArtFormItem(
+        "Pooja Kunitha",
+        "file:///android_asset/art_pooja.jpg",
+        "Sacred procession"
+    ),
+    ArtFormItem(
+        "Veeragase",
+        "file:///android_asset/art_veeragase.jpg",
+        "Warrior trance"
+    ),
+    ArtFormItem(
+        "Kamsale",
+        "file:///android_asset/art_kamsale.jpg",
+        "Brass cymbal devotion"
+    ),
+    ArtFormItem(
+        "Nagari",
+        "file:///android_asset/art_nagari.jpg",
+        "Festive baraat"
+    ),
+    ArtFormItem(
+        "Suggi",
+        "file:///android_asset/art_suggi.jpg",
+        "Harvest joy"
+    )
+)
+
+@Composable
+fun ArtFormsStrip(
+    onPick: (String) -> Unit
+) {
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 24.dp)
+    ) {
+
+        // Header
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.Bottom
+        ) {
+
+            Column {
+
+                Text(
+                    text = "HERITAGE",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.secondary
+                )
+
+                Spacer(modifier = Modifier.height(6.dp))
+
+                Text(
+                    text = "Living folk traditions",
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+
+            Text(
+                text = "Tap an art form to discover its troupes.",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.width(140.dp)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        // Horizontal Cards
+        Row(
+            modifier = Modifier
+                .horizontalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+
+            items.forEach { item ->
+
+                Box(
+                    modifier = Modifier
+                        .width(170.dp)
+                        .height(240.dp)
+                        .clip(RoundedCornerShape(24.dp))
+                        .clickable {
+                            onPick(item.name)
+                        }
+                ) {
+
+                    AsyncImage(
+                        model = item.img,
+                        contentDescription = item.name,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize()
+                    )
+
+                    // Gradient overlay
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(
+                                Brush.verticalGradient(
+                                    colors = listOf(
+                                        Color.Transparent,
+                                        Color.Black.copy(alpha = 0.75f)
+                                    )
+                                )
+                            )
+                    )
+
+                    // Text
+                    Column(
+                        modifier = Modifier
+                            .align(Alignment.BottomStart)
+                            .padding(14.dp)
+                    ) {
+
+                        Text(
+                            text = item.name,
+                            style = MaterialTheme.typography.titleMedium,
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold
+                        )
+
+                        Spacer(modifier = Modifier.height(2.dp))
+
+                        Text(
+                            text = item.note,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Color.White.copy(alpha = 0.8f)
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
